@@ -5,7 +5,7 @@ public class JocDeLaVida {
   Scanner e = new Scanner(System.in);
   public static final int ALIVE_MIN = 2;
   public static final int ALIVE_MAX = 3;
-  public static final int REVIVE = 4;
+  public static final int REVIVE = 3;
 
   public static void main(String[] args) {
     JocDeLaVida a = new JocDeLaVida();
@@ -36,21 +36,30 @@ public class JocDeLaVida {
       int posWidth = getRandomNumber(1, (boardWidth - 1));
 
       createColony(board, posHeight, posWidth);
+      
     }
-
-    copyBoard(board, placeholderBoard, boardHeight, boardWidth);
-
     printArray(board, boardHeight, boardWidth);
+      System.out.println("---------------");
+    int cont = 0;
+    
+    while (cont < 10) {
+      copyBoard(board, placeholderBoard, boardHeight, boardWidth);
 
-    for (int i = 1; i < boardHeight - 1; i++) {
-      for (int j = 1; j < boardWidth - 1; j++) {
-        if (isAlive(board[i][j]) == true) {
-          checkAlive(board, placeholderBoard, i, j);
+      //printArray(board, boardHeight, boardWidth);
+
+      for (int i = 1; i < boardHeight - 1; i++) {
+        for (int j = 1; j < boardWidth - 1; j++) {
+          if (isAlive(board[i][j]) == true) {
+            checkAlive(board, placeholderBoard, i, j);
+          } else {
+            checkDead(board, placeholderBoard, i, j);
+          }
         }
       }
+      copyBoard(placeholderBoard, board, boardHeight, boardWidth);
+      printArray(board, boardHeight, boardWidth);
+      cont++;
     }
-
-    printArray(placeholderBoard, boardHeight, boardWidth);
   }
 
   public int readInt() {
@@ -138,10 +147,34 @@ public class JocDeLaVida {
     }
     contNeighbours -= 1;
 
-    if (contNeighbours < ALIVE_MIN || contNeighbours > ALIVE_MAX) {
+    if (contNeighbours < 2 || contNeighbours > 3) {
       placeholderBoard[posHeight][posWidth] = 1;
     }
+
+    contNeighbours = 0;
   }
 
-  public void checkDead() {}
+  public void checkDead(
+    int[][] board,
+    int[][] placeholderBoard,
+    int posHeight,
+    int posWidth
+  ) {
+    int contNeighbours = 0;
+
+    for (int i = (posHeight - 1); i < (posHeight + 1); i++) {
+      for (int j = (posWidth - 1); j < (posWidth + 1); j++) {
+        if (board[i][j] == 2) {
+          contNeighbours++;
+        }
+      }
+    }
+    contNeighbours -= 1;
+
+    if (contNeighbours == 3) {
+      placeholderBoard[posHeight][posWidth] = 2;
+    }
+
+    contNeighbours = 0;
+  }
 }
