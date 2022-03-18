@@ -1,0 +1,5 @@
+- generacio de grups de 5 veins a partir de un punt x
+- mirar si una cellula esta viva o morta
+- si esta viva mirar si viu o mor
+- si esta morta mirar si reviu
+
