@@ -41,7 +41,7 @@ public class JocDeLaVida {
     System.out.println("---------------");
     int cont = 0;
 
-    while (cont < 1) {
+    while (cont < 15) {
       copyBoard(board, placeholderBoard, boardHeight, boardWidth);
 
       //printArray(board, boardHeight, boardWidth);
@@ -167,8 +167,8 @@ public class JocDeLaVida {
   ) {
     int contNeighbours = 0;
 
-    for (int i = (posHeight - 1); i < (posHeight + 1); i++) {
-      for (int j = (posWidth - 1); j < (posWidth + 1); j++) {
+    for (int i = (posHeight - 1); i < (posHeight + 2); i++) {
+      for (int j = (posWidth - 1); j < (posWidth + 2); j++) {
         if (board[i][j] == 2) {
           contNeighbours++;
         }
