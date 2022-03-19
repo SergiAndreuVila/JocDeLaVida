@@ -13,21 +13,39 @@ public class JocDeLaVida {
   }
 
   public void principal() {
+    // menu
+    int option = 0;
+    int boardHeight = 0, boardWidth = 0;
+    boolean boardDefined = false;
+    do {
+      System.out.println(" que vols fer? ");
+
+      switch (option) {
+        case 1:
+          break;
+        case 2:
+          break;
+        default:
+          break;
+      }
+    } while (option != 4);
     //define board size
     System.out.println("introdueix l'ample del taulell");
-    int boardWidth = readInt() + 2;
+    boardWidth = readInt() + 2;
     System.out.println("introdueix l'altura del taulell");
-    int boardHeight = readInt() + 2;
-
+    boardHeight = readInt() + 2;
+    //init board
     int[][] board = new int[boardHeight][boardWidth];
     int[][] placeholderBoard = new int[boardHeight][boardWidth];
 
+    // fill board
     for (int i = 1; i < (boardHeight - 1); i++) {
       for (int j = 1; j < (boardWidth - 1); j++) {
         board[i][j] = 1;
       }
     }
 
+    //adding number of colonies automaticly
     System.out.println("cuantes colonies vols crear: ");
     int numberOfColonys = readInt();
 
@@ -37,14 +55,14 @@ public class JocDeLaVida {
 
       createColony(board, posHeight, posWidth);
     }
+
+    //print original board
     printArray(board, boardHeight, boardWidth);
     System.out.println("---------------");
-    int cont = 0;
 
+    int cont = 0;
     while (cont < 15) {
       copyBoard(board, placeholderBoard, boardHeight, boardWidth);
-
-      //printArray(board, boardHeight, boardWidth);
 
       for (int i = 1; i < boardHeight - 1; i++) {
         for (int j = 1; j < boardWidth - 1; j++) {
@@ -139,20 +157,18 @@ public class JocDeLaVida {
 
     for (int i = (posHeight - 1); i < (posHeight + 2); i++) {
       for (int j = (posWidth - 1); j < (posWidth + 2); j++) {
-        
         if (board[i][j] == 2) {
           contNeighbours++;
         }
       }
-      
     }
 
     contNeighbours -= 1;
 
-    if (contNeighbours < 2) {
+    if (contNeighbours < ALIVE_MIN) {
       placeholderBoard[posHeight][posWidth] = 1;
     }
-    if (contNeighbours > 3) {
+    if (contNeighbours > ALIVE_MAX) {
       placeholderBoard[posHeight][posWidth] = 1;
     }
 
@@ -176,7 +192,7 @@ public class JocDeLaVida {
     }
     contNeighbours -= 1;
 
-    if (contNeighbours == 3) {
+    if (contNeighbours == REVIVE) {
       placeholderBoard[posHeight][posWidth] = 2;
     }
 
