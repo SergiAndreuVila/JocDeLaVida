@@ -36,13 +36,12 @@ public class JocDeLaVida {
       int posWidth = getRandomNumber(1, (boardWidth - 1));
 
       createColony(board, posHeight, posWidth);
-      
     }
     printArray(board, boardHeight, boardWidth);
-      System.out.println("---------------");
+    System.out.println("---------------");
     int cont = 0;
-    
-    while (cont < 10) {
+
+    while (cont < 1) {
       copyBoard(board, placeholderBoard, boardHeight, boardWidth);
 
       //printArray(board, boardHeight, boardWidth);
@@ -138,16 +137,22 @@ public class JocDeLaVida {
   ) {
     int contNeighbours = 0;
 
-    for (int i = (posHeight - 1); i < (posHeight + 1); i++) {
-      for (int j = (posWidth - 1); j < (posWidth + 1); j++) {
+    for (int i = (posHeight - 1); i < (posHeight + 2); i++) {
+      for (int j = (posWidth - 1); j < (posWidth + 2); j++) {
+        
         if (board[i][j] == 2) {
           contNeighbours++;
         }
       }
+      
     }
+
     contNeighbours -= 1;
 
-    if (contNeighbours < 2 || contNeighbours > 3) {
+    if (contNeighbours < 2) {
+      placeholderBoard[posHeight][posWidth] = 1;
+    }
+    if (contNeighbours > 3) {
       placeholderBoard[posHeight][posWidth] = 1;
     }
 
