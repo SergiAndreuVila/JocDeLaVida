@@ -18,70 +18,57 @@ public class JocDeLaVida {
     int boardHeight = 0, boardWidth = 0;
     int[][] board;
     int[][] placeholderBoard;
-    boolean boardDefined = false;
-    do {
-      System.out.println(" que vols fer? ");
+    
+//define board size
+System.out.println("introdueix l'ample del taulell");
+boardWidth = readInt() + 2;
+System.out.println("introdueix l'altura del taulell");
+boardHeight = readInt() + 2;
 
-      switch (option) {
-        case 1:
-          //define board size
-          System.out.println("introdueix l'ample del taulell");
-          boardWidth = readInt() + 2;
-          System.out.println("introdueix l'altura del taulell");
-          boardHeight = readInt() + 2;
+//init board
+board = new int[boardHeight][boardWidth];
+placeholderBoard = new int[boardHeight][boardWidth];
 
-          //init board
-          board = new int[boardHeight][boardWidth];
-          placeholderBoard = new int[boardHeight][boardWidth];
+// fill board
+for (int i = 1; i < (boardHeight - 1); i++) {
+  for (int j = 1; j < (boardWidth - 1); j++) {
+    board[i][j] = 1;
+  }
+}
 
-          // fill board
-          for (int i = 1; i < (boardHeight - 1); i++) {
-            for (int j = 1; j < (boardWidth - 1); j++) {
-              board[i][j] = 1;
-            }
+    //adding number of colonies automaticly
+    System.out.println("cuantes colonies vols crear: ");
+    int numberOfColonys = readInt();
+
+    for (int i = 0; i < numberOfColonys; i++) {
+      int posHeight = getRandomNumber(1, (boardHeight - 1));
+      int posWidth = getRandomNumber(1, (boardWidth - 1));
+
+      createColony(board, posHeight, posWidth);
+    }
+
+    //print original board
+    printArray(board, boardHeight, boardWidth);
+    System.out.println("---------------");
+
+    // play game
+    int cont = 0;
+    while (cont < 15) {
+      copyBoard(board, placeholderBoard, boardHeight, boardWidth);
+
+      for (int i = 1; i < boardHeight - 1; i++) {
+        for (int j = 1; j < boardWidth - 1; j++) {
+          if (isAlive(board[i][j]) == true) {
+            checkAlive(board, placeholderBoard, i, j);
+          } else {
+            checkDead(board, placeholderBoard, i, j);
           }
-
-          break;
-        case 2:
-          //adding number of colonies automaticly
-          System.out.println("cuantes colonies vols crear: ");
-          int numberOfColonys = readInt();
-
-          for (int i = 0; i < numberOfColonys; i++) {
-            int posHeight = getRandomNumber(1, (boardHeight - 1));
-            int posWidth = getRandomNumber(1, (boardWidth - 1));
-
-            createColony(board, posHeight, posWidth);
-          }
-
-          //print original board
-          printArray(board, boardHeight, boardWidth);
-          System.out.println("---------------");
-          break;
-        case 3:
-          // play game
-          int cont = 0;
-          while (cont < 15) {
-            copyBoard(board, placeholderBoard, boardHeight, boardWidth);
-
-            for (int i = 1; i < boardHeight - 1; i++) {
-              for (int j = 1; j < boardWidth - 1; j++) {
-                if (isAlive(board[i][j]) == true) {
-                  checkAlive(board, placeholderBoard, i, j);
-                } else {
-                  checkDead(board, placeholderBoard, i, j);
-                }
-              }
-            }
-            copyBoard(placeholderBoard, board, boardHeight, boardWidth);
-            printArray(board, boardHeight, boardWidth);
-            cont++;
-          }
-          break;
-        default:
-          break;
+        }
       }
-    } while (option != 4);
+      copyBoard(placeholderBoard, board, boardHeight, boardWidth);
+      printArray(board, boardHeight, boardWidth);
+      cont++;
+    }
   }
 
   public int readInt() {
