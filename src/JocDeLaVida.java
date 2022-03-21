@@ -14,38 +14,75 @@ public class JocDeLaVida {
 
   public void principal() {
     // menu
-    int option = 0;
     int boardHeight = 0, boardWidth = 0;
     int[][] board;
     int[][] placeholderBoard;
-    
-//define board size
-System.out.println("introdueix l'ample del taulell");
-boardWidth = readInt() + 2;
-System.out.println("introdueix l'altura del taulell");
-boardHeight = readInt() + 2;
+    boolean addcolonies = false;
+    //define board size
+    System.out.println("introdueix l'ample del taulell");
+    boardWidth = readInt() + 2;
+    System.out.println("introdueix l'altura del taulell");
+    boardHeight = readInt() + 2;
 
-//init board
-board = new int[boardHeight][boardWidth];
-placeholderBoard = new int[boardHeight][boardWidth];
+    //init board
+    board = new int[boardHeight][boardWidth];
+    placeholderBoard = new int[boardHeight][boardWidth];
 
-// fill board
-for (int i = 1; i < (boardHeight - 1); i++) {
-  for (int j = 1; j < (boardWidth - 1); j++) {
-    board[i][j] = 1;
-  }
-}
-
-    //adding number of colonies automaticly
-    System.out.println("cuantes colonies vols crear: ");
-    int numberOfColonys = readInt();
-
-    for (int i = 0; i < numberOfColonys; i++) {
-      int posHeight = getRandomNumber(1, (boardHeight - 1));
-      int posWidth = getRandomNumber(1, (boardWidth - 1));
-
-      createColony(board, posHeight, posWidth);
+    // fill board
+    for (int i = 1; i < (boardHeight - 1); i++) {
+      for (int j = 1; j < (boardWidth - 1); j++) {
+        board[i][j] = 1;
+      }
     }
+
+    //define the way you are going to add the colonies
+    do {
+      System.out.println(
+        "de quina manera vols crear les colonies 1- de forma manual 2- forma automatica"
+      );
+      int option = readInt();
+      switch (option) {
+        case 1:
+          int addcolonie = -1;
+          do {
+                    
+            int posHeight = 0;
+            int posWidth = 0;
+            do {
+              System.out.println(
+                "introdueix la posicio altura del 1 al " + (boardHeight - 2)
+              );
+              posHeight = readInt();
+            } while (posHeight < 1 || posHeight > (boardHeight - 2));
+            do {
+              System.out.println(
+                "introdueix la posicio amplada del 1 al " + (boardWidth - 2)
+              );
+              posWidth = readInt();
+            } while (posWidth < 1 || posWidth > (boardWidth - 2));
+
+            createColony(board, posHeight, posWidth);
+            System.out.println("si vols parar d'introduir colones introdueix un 0 ");
+            addcolonie = readInt();
+          } while (addcolonie != 0);
+          break;
+        case 2:
+          //adding number of colonies automaticly
+          System.out.println("cuantes colonies vols crear: ");
+          int numberOfColonys = readInt();
+
+          for (int i = 0; i < numberOfColonys; i++) {
+            int posHeight = getRandomNumber(1, (boardHeight - 1));
+            int posWidth = getRandomNumber(1, (boardWidth - 1));
+
+            createColony(board, posHeight, posWidth);
+          }
+
+          break;
+        default:
+          break;
+      }
+    } while (addcolonies == true);
 
     //print original board
     printArray(board, boardHeight, boardWidth);
