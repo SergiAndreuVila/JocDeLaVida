@@ -15,6 +15,7 @@ public class JocDeLaVida {
   public void principal() {
     // menu
     int boardHeight = 0, boardWidth = 0;
+    int posHeight = 0, posWidth = 0;
     int[][] board;
     int[][] placeholderBoard;
     boolean addcolonies = false;
@@ -43,11 +44,11 @@ public class JocDeLaVida {
       int option = readInt();
       switch (option) {
         case 1:
-          int addcolonie = -1;
-          do {
-                    
-            int posHeight = 0;
-            int posWidth = 0;
+          posHeight = 0;
+          posWidth = 0;
+
+          int cont = 0;
+          while (cont < 5) {
             do {
               System.out.println(
                 "introdueix la posicio altura del 1 al " + (boardHeight - 2)
@@ -61,10 +62,13 @@ public class JocDeLaVida {
               posWidth = readInt();
             } while (posWidth < 1 || posWidth > (boardWidth - 2));
 
-            createColony(board, posHeight, posWidth);
-            System.out.println("si vols parar d'introduir colones introdueix un 0 ");
-            addcolonie = readInt();
-          } while (addcolonie != 0);
+            board[posHeight][posWidth] = 2;
+
+            printArray(board, boardHeight, boardWidth);
+            cont++;
+          }
+          addcolonies= true;
+
           break;
         case 2:
           //adding number of colonies automaticly
@@ -72,17 +76,19 @@ public class JocDeLaVida {
           int numberOfColonys = readInt();
 
           for (int i = 0; i < numberOfColonys; i++) {
-            int posHeight = getRandomNumber(1, (boardHeight - 1));
-            int posWidth = getRandomNumber(1, (boardWidth - 1));
+            posHeight = getRandomNumber(1, (boardHeight - 1));
+            posWidth = getRandomNumber(1, (boardWidth - 1));
 
             createColony(board, posHeight, posWidth);
           }
+          addcolonies = true;
 
           break;
         default:
+        addcolonies= false;
           break;
       }
-    } while (addcolonies == true);
+    } while (addcolonies == false);
 
     //print original board
     printArray(board, boardHeight, boardWidth);
@@ -172,6 +178,10 @@ public class JocDeLaVida {
       if (board[x][y] == 1) {
         board[x][y] = 2;
         cont--;
+      } else if (board[x][y] == 2) {
+        board[x][y] = 2;
+      } else if (board[x][y] == 0) {
+        board[x][y] = 0;
       }
     }
   }
