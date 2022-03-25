@@ -3,9 +3,6 @@ import java.util.Scanner;
 public class JocDeLaVida {
 
   Scanner e = new Scanner(System.in);
-  public static final int ALIVE_MIN = 2;
-  public static final int ALIVE_MAX = 3;
-  public static final int REVIVE = 3;
 
   public static void main(String[] args) {
     JocDeLaVida a = new JocDeLaVida();
@@ -13,12 +10,15 @@ public class JocDeLaVida {
   }
 
   public void principal() {
-    // menu
+    int aliveMin = 2;
+    int aliveMax = 3;
+    int revive = 3;
+
     int boardHeight = 0, boardWidth = 0;
     int posHeight = 0, posWidth = 0;
-    int[][] board;
-    int[][] placeholderBoard;
+
     boolean addcolonies = false;
+
     //define board size
     System.out.println("introdueix l'ample del taulell");
     boardWidth = readInt() + 2;
@@ -26,8 +26,8 @@ public class JocDeLaVida {
     boardHeight = readInt() + 2;
 
     //init board
-    board = new int[boardHeight][boardWidth];
-    placeholderBoard = new int[boardHeight][boardWidth];
+    int board[][] = new int[boardHeight][boardWidth];
+    int placeholderBoard[][] = new int[boardHeight][boardWidth];
 
     // fill board
     for (int i = 1; i < (boardHeight - 1); i++) {
@@ -39,9 +39,10 @@ public class JocDeLaVida {
     //define the way you are going to add the colonies
     do {
       System.out.println(
-        "de quina manera vols crear les colonies 1- de forma manual 2- forma automatica"
+        "que vols fer: \n 1- de forma manual\n 2- forma automatica\n 3-canvia les normes del joc"
       );
       int option = readInt();
+
       switch (option) {
         case 1:
           posHeight = 0;
@@ -67,7 +68,7 @@ public class JocDeLaVida {
             printArray(board, boardHeight, boardWidth);
             cont++;
           }
-          addcolonies= true;
+          addcolonies = true;
 
           break;
         case 2:
@@ -84,8 +85,17 @@ public class JocDeLaVida {
           addcolonies = true;
 
           break;
+        case 3:
+        //change rules of the game
+          System.out.println("introdueix el minim per estar viu:");
+          aliveMin = readInt();
+          System.out.println("introdueix el maxim per estar viu:");
+          aliveMax =readInt();
+          System.out.println("introdueix el numero per reviure:");
+          revive = readInt();
+          break;
         default:
-        addcolonies= false;
+          addcolonies = false;
           break;
       }
     } while (addcolonies == false);
@@ -102,9 +112,9 @@ public class JocDeLaVida {
       for (int i = 1; i < boardHeight - 1; i++) {
         for (int j = 1; j < boardWidth - 1; j++) {
           if (isAlive(board[i][j]) == true) {
-            checkAlive(board, placeholderBoard, i, j);
+            checkAlive(board, placeholderBoard, i, j, aliveMin, aliveMax);
           } else {
-            checkDead(board, placeholderBoard, i, j);
+            checkDead(board, placeholderBoard, i, j, revive);
           }
         }
       }
@@ -178,8 +188,10 @@ public class JocDeLaVida {
       if (board[x][y] == 1) {
         board[x][y] = 2;
         cont--;
+
       } else if (board[x][y] == 2) {
         board[x][y] = 2;
+        
       } else if (board[x][y] == 0) {
         board[x][y] = 0;
       }
@@ -190,7 +202,7 @@ public class JocDeLaVida {
     int[][] board,
     int[][] placeholderBoard,
     int posHeight,
-    int posWidth
+    int posWidth, int aliveMin , int aliveMax
   ) {
     int contNeighbours = 0;
 
@@ -204,10 +216,10 @@ public class JocDeLaVida {
 
     contNeighbours -= 1;
 
-    if (contNeighbours < ALIVE_MIN) {
+    if (contNeighbours < aliveMin) {
       placeholderBoard[posHeight][posWidth] = 1;
     }
-    if (contNeighbours > ALIVE_MAX) {
+    if (contNeighbours > aliveMax) {
       placeholderBoard[posHeight][posWidth] = 1;
     }
 
@@ -218,7 +230,7 @@ public class JocDeLaVida {
     int[][] board,
     int[][] placeholderBoard,
     int posHeight,
-    int posWidth
+    int posWidth, int revive
   ) {
     int contNeighbours = 0;
 
@@ -231,7 +243,7 @@ public class JocDeLaVida {
     }
     contNeighbours -= 1;
 
-    if (contNeighbours == REVIVE) {
+    if (contNeighbours == revive) {
       placeholderBoard[posHeight][posWidth] = 2;
     }
 
