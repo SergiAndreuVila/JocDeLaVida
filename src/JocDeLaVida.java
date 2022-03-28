@@ -3,6 +3,10 @@ import java.util.Scanner;
 public class JocDeLaVida {
 
   Scanner e = new Scanner(System.in);
+  public static final int BOARD_MARGIN = 2;
+  public static final int ALIVE_CELL = 2;
+  public static final int DEAD_CELL = 1;
+  public static final int NO_CELL = 0;
 
   public static void main(String[] args) {
     JocDeLaVida a = new JocDeLaVida();
@@ -21,9 +25,9 @@ public class JocDeLaVida {
 
     //define board size
     System.out.println("introdueix l'ample del taulell");
-    boardWidth = readInt() + 2;
+    boardWidth = readInt() + BOARD_MARGIN;
     System.out.println("introdueix l'altura del taulell");
-    boardHeight = readInt() + 2;
+    boardHeight = readInt() + BOARD_MARGIN;
 
     //init board
     int board[][] = new int[boardHeight][boardWidth];
@@ -32,7 +36,7 @@ public class JocDeLaVida {
     // fill board
     for (int i = 1; i < (boardHeight - 1); i++) {
       for (int j = 1; j < (boardWidth - 1); j++) {
-        board[i][j] = 1;
+        board[i][j] = DEAD_CELL;
       }
     }
 
@@ -47,25 +51,26 @@ public class JocDeLaVida {
         case 1:
           posHeight = 0;
           posWidth = 0;
+          int insertedCells = 5;
 
           int cont = 0;
-          while (cont < 5) {
+          while (cont < insertedCells) {
             do {
               System.out.println(
-                "introdueix la posicio altura del 1 al " + (boardHeight - 2)
+                "introdueix la posicio altura del 1 al " + (boardHeight - BOARD_MARGIN)
               );
               posHeight = readInt();
-            } while (posHeight < 1 || posHeight > (boardHeight - 2));
+            } while (posHeight < 1 || posHeight > (boardHeight - BOARD_MARGIN));
             do {
               System.out.println(
-                "introdueix la posicio amplada del 1 al " + (boardWidth - 2)
+                "introdueix la posicio amplada del 1 al " + (boardWidth - BOARD_MARGIN)
               );
               posWidth = readInt();
-            } while (posWidth < 1 || posWidth > (boardWidth - 2));
+            } while (posWidth < 1 || posWidth > (boardWidth - BOARD_MARGIN));
 
-            board[posHeight][posWidth] = 2;
+            board[posHeight][posWidth] = ALIVE_CELL;
 
-            printArray(board, boardHeight, boardWidth);
+            printBoard(board, boardHeight, boardWidth);
             cont++;
           }
           addcolonies = true;
@@ -86,24 +91,21 @@ public class JocDeLaVida {
 
           break;
         case 3:
-        //change rules of the game
+          //change rules of the game
           System.out.println("introdueix el minim per estar viu:");
           aliveMin = readInt();
           System.out.println("introdueix el maxim per estar viu:");
-          aliveMax =readInt();
+          aliveMax = readInt();
           System.out.println("introdueix el numero per reviure:");
           revive = readInt();
-          break;
-        default:
-          addcolonies = false;
           break;
       }
     } while (addcolonies == false);
 
     //print original board
-    printArray(board, boardHeight, boardWidth);
+    printBoard(board, boardHeight, boardWidth);
     System.out.println("---------------");
-
+//TODO: add delay
     // play game
     int cont = 0;
     while (cont < 15) {
@@ -112,14 +114,20 @@ public class JocDeLaVida {
       for (int i = 1; i < boardHeight - 1; i++) {
         for (int j = 1; j < boardWidth - 1; j++) {
           if (isAlive(board[i][j]) == true) {
-            checkAlive(board, placeholderBoard, i, j, aliveMin, aliveMax);
+            applyAliveRules(board, placeholderBoard, i, j, aliveMin, aliveMax);
           } else {
-            checkDead(board, placeholderBoard, i, j, revive);
+            applyDeadRules(board, placeholderBoard, i, j, revive);
           }
         }
       }
       copyBoard(placeholderBoard, board, boardHeight, boardWidth);
-      printArray(board, boardHeight, boardWidth);
+      printBoard(board, boardHeight, boardWidth);
+      try {
+        Thread.sleep(500);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
       cont++;
     }
   }
@@ -130,17 +138,17 @@ public class JocDeLaVida {
     return num;
   }
 
-  public void printArray(int[][] array, int height, int width) {
+  public void printBoard(int[][] array, int height, int width) {
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
         switch (array[i][j]) {
-          case 0:
+          case NO_CELL:
             System.out.print(' ');
             break;
-          case 1:
+          case DEAD_CELL:
             System.out.print('_');
             break;
-          case 2:
+          case ALIVE_CELL:
             System.out.print('#');
             break;
         }
@@ -177,37 +185,39 @@ public class JocDeLaVida {
   }
 
   public void createColony(int[][] board, int posHeight, int posWidth) {
-    board[posHeight][posWidth] = 2;
+    board[posHeight][posWidth] = ALIVE_CELL;
 
-    int cont = 4;
+    int colonySize = 4;
+    //int maxTry = 15;
 
-    while (cont > 0) {
+    while (colonySize > 0 ) {
       int x = getRandomNumber((posHeight - 1), (posHeight + 2));
       int y = getRandomNumber((posWidth - 1), (posWidth + 2));
 
-      if (board[x][y] == 1) {
-        board[x][y] = 2;
-        cont--;
-
-      } else if (board[x][y] == 2) {
-        board[x][y] = 2;
-        
-      } else if (board[x][y] == 0) {
-        board[x][y] = 0;
+      if (board[x][y] == DEAD_CELL) {
+        board[x][y] = ALIVE_CELL;
+        colonySize--;
+      } else if (board[x][y] == ALIVE_CELL) {
+        board[x][y] = ALIVE_CELL;
+      } else if (board[x][y] == NO_CELL) {
+        board[x][y] = NO_CELL;
       }
+      //maxTry--;
     }
   }
 
-  public void checkAlive(
+  public void applyAliveRules(
     int[][] board,
     int[][] placeholderBoard,
     int posHeight,
-    int posWidth, int aliveMin , int aliveMax
+    int posWidth,
+    int aliveMin,
+    int aliveMax
   ) {
     int contNeighbours = 0;
 
-    for (int i = (posHeight - 1); i < (posHeight + 2); i++) {
-      for (int j = (posWidth - 1); j < (posWidth + 2); j++) {
+    for (int i = (posHeight - 1); i < (posHeight + BOARD_MARGIN); i++) {
+      for (int j = (posWidth - 1); j < (posWidth + BOARD_MARGIN); j++) {
         if (board[i][j] == 2) {
           contNeighbours++;
         }
@@ -226,16 +236,17 @@ public class JocDeLaVida {
     contNeighbours = 0;
   }
 
-  public void checkDead(
+  public void applyDeadRules(
     int[][] board,
     int[][] placeholderBoard,
     int posHeight,
-    int posWidth, int revive
+    int posWidth,
+    int revive
   ) {
     int contNeighbours = 0;
 
-    for (int i = (posHeight - 1); i < (posHeight + 2); i++) {
-      for (int j = (posWidth - 1); j < (posWidth + 2); j++) {
+    for (int i = (posHeight - 1); i < (posHeight + BOARD_MARGIN); i++) {
+      for (int j = (posWidth - 1); j < (posWidth + BOARD_MARGIN); j++) {
         if (board[i][j] == 2) {
           contNeighbours++;
         }
